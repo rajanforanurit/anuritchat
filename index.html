@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anuritmind · Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #080a0e;
+  --bg2:         #0e1117;
+  --surface:     #13161d;
+  --surface2:    #1a1e28;
+  --border:      #1f2535;
+  --border2:     #2a3148;
+  --accent:      #4f8cff;
+  --accent-dim:  rgba(79,140,255,0.12);
+  --accent-glow: rgba(79,140,255,0.22);
+  --green:       #2dd4a0;
+  --red:         #ff5f5f;
+  --text:        #dde2f0;
+  --text2:       #8892aa;
+  --text3:       #4e5870;
+  --mono:        'JetBrains Mono', monospace;
+  --sans:        'Syne', sans-serif;
+}
+
+html, body {
+  height: 100%; background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 15px;
+  overflow: hidden; -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+/* ── LOGIN ────────────────────────────────────────────────────────────── */
+#login-screen {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+}
+
+.login-lines {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 39px,
+    rgba(79,140,255,0.03) 39px, rgba(79,140,255,0.03) 40px
+  );
+}
+
+.login-card {
+  position: relative; width: 420px;
+  animation: cardIn .5s cubic-bezier(.16,1,.3,1) both;
+}
+
+.login-eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 32px;
+  display: flex; align-items: center; gap: 10px;
+}
+.login-eyebrow::before {
+  content: ''; display: block; width: 24px; height: 1px; background: var(--accent);
+}
+
+.login-card h1 {
+  font-size: 38px; font-weight: 800; line-height: 1.05;
+  letter-spacing: -.03em; color: var(--text); margin-bottom: 10px;
+}
+.login-card h1 span { color: var(--accent); }
+
+.login-card p {
+  font-family: var(--mono); font-size: 12px; color: var(--text3);
+  line-height: 1.7; margin-bottom: 40px;
+}
+
+.field { margin-bottom: 16px; }
+.field label {
+  display: block; font-family: var(--mono); font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px;
+}
+.field input {
+  width: 100%; background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 13px 16px; color: var(--text);
+  font-family: var(--mono); font-size: 13px; outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.field input::placeholder { color: var(--text3); }
+
+.login-err {
+  font-family: var(--mono); font-size: 11.5px; color: var(--red);
+  background: rgba(255,95,95,.08); border: 1px solid rgba(255,95,95,.2);
+  border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; display: none;
+}
+.login-err.show { display: block; animation: shake .25s ease; }
+
+#btn-signin {
+  width: 100%; padding: 14px; border: none; border-radius: 6px;
+  background: var(--accent); cursor: pointer;
+  font-family: var(--sans); font-size: 14px; font-weight: 700; color: #fff;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  transition: opacity .15s, transform .1s; margin-top: 6px;
+}
+#btn-signin:hover { opacity: .88; }
+#btn-signin:active { transform: scale(.98); }
+#btn-signin:disabled { opacity: .45; cursor: not-allowed; }
+
+.spinner {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.25); border-top-color: #fff;
+  animation: spin .55s linear infinite; display: none; flex-shrink: 0;
+}
+#btn-signin.loading .spinner { display: block; }
+#btn-signin.loading .signin-label { opacity: .6; }
+
+/* ── APP SHELL ────────────────────────────────────────────────────────── */
+#app {
+  display: none; height: 100vh;
+  grid-template-rows: 52px 1fr;
+  grid-template-columns: 240px 1fr;
+  grid-template-areas: "bar bar" "side chat";
+}
+#app.on { display: grid; animation: fadeIn .3s ease; }
+
+/* ── TOP BAR ──────────────────────────────────────────────────────────── */
+#bar {
+  grid-area: bar;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px;
+}
+.bar-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 15px; letter-spacing: -.02em; color: var(--text);
+}
+.bar-logo-mark {
+  width: 28px; height: 28px; border-radius: 7px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 13px; color: #fff;
+}
+.bar-pill {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 99px; padding: 5px 13px 5px 10px;
+  font-family: var(--mono); font-size: 11px; color: var(--text2);
+}
+.pill-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 6px var(--green); flex-shrink: 0;
+}
+.bar-right { display: flex; align-items: center; gap: 8px; }
+#btn-logout {
+  background: none; border: 1px solid var(--border2); border-radius: 5px;
+  padding: 5px 12px; cursor: pointer; color: var(--text3);
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+  text-transform: uppercase; transition: border-color .15s, color .15s;
+}
+#btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+/* ── SIDEBAR ──────────────────────────────────────────────────────────── */
+#side {
+  grid-area: side;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.side-section { padding: 16px 14px; border-bottom: 1px solid var(--border); }
+.side-label {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 14px;
+}
+.range-row {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+}
+.range-row span { font-family: var(--mono); font-size: 12px; color: var(--text2); }
+.range-row .rval { color: var(--accent); min-width: 18px; text-align: right; }
+input[type=range] {
+  -webkit-appearance: none; height: 3px; border-radius: 99px;
+  background: var(--border2); outline: none; cursor: pointer; width: 80px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); cursor: pointer; box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.toggle-row { display: flex; align-items: center; justify-content: space-between; }
+.toggle-row span { font-family: var(--mono); font-size: 12px; color: var(--text2); }
+.tog { position: relative; width: 32px; height: 18px; cursor: pointer; }
+.tog input { opacity: 0; width: 0; height: 0; }
+.tog-track {
+  position: absolute; inset: 0; border-radius: 99px;
+  background: var(--border2); transition: background .15s;
+}
+.tog-thumb {
+  position: absolute; top: 3px; left: 3px; width: 12px; height: 12px;
+  border-radius: 50%; background: #fff; transition: transform .15s;
+}
+.tog input:checked ~ .tog-track { background: var(--accent); }
+.tog input:checked ~ .tog-thumb { transform: translateX(14px); }
+
+.status-block {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; margin-top: 4px;
+}
+.status-line {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px; color: var(--text2); padding: 3px 0;
+}
+.status-line + .status-line {
+  border-top: 1px solid var(--border); margin-top: 3px; padding-top: 6px;
+}
+.status-ico { font-size: 13px; flex-shrink: 0; }
+#retrieved-count {
+  font-family: var(--mono); font-size: 10.5px; color: var(--text3);
+  margin-top: 8px; padding-left: 2px;
+}
+.side-bottom { margin-top: auto; padding: 14px; }
+#btn-clear {
+  width: 100%; padding: 9px; background: none;
+  border: 1px solid var(--border2); border-radius: 6px; cursor: pointer;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text3);
+  transition: border-color .15s, color .15s;
+}
+#btn-clear:hover { border-color: var(--red); color: var(--red); }
+
+/* ── CHAT AREA ────────────────────────────────────────────────────────── */
+#chat {
+  grid-area: chat; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--bg);
+  background-image: radial-gradient(ellipse 60% 40% at 70% 10%, rgba(79,140,255,.04) 0%, transparent 70%);
+}
+#messages {
+  flex: 1; overflow-y: auto; padding: 28px 28px 10px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+
+/* Empty state */
+#empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 40px; gap: 10px;
+}
+#empty.gone { display: none; }
+.empty-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 1px solid var(--border2); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 8px;
+  box-shadow: 0 0 40px rgba(79,140,255,.08);
+}
+#empty h2 { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
+#empty p {
+  font-family: var(--mono); font-size: 11.5px; color: var(--text3);
+  line-height: 1.7; max-width: 320px; margin-top: 4px;
+}
+.chips {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  justify-content: center; margin-top: 20px; max-width: 460px;
+}
+.chip {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 99px; padding: 7px 15px; cursor: pointer;
+  font-family: var(--mono); font-size: 11px; color: var(--text2);
+  transition: border-color .15s, color .15s, transform .15s;
+}
+.chip:hover { border-color: var(--accent); color: var(--text); transform: translateY(-1px); }
+
+/* Messages */
+.msg {
+  display: flex; gap: 11px;
+  animation: msgIn .28s cubic-bezier(.16,1,.3,1); max-width: 860px;
+}
+.msg.user { align-self: flex-end; flex-direction: row-reverse; max-width: 680px; }
+.avatar {
+  width: 30px; height: 30px; border-radius: 7px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.msg.user .avatar {
+  background: var(--accent); font-family: var(--mono); font-size: 11px; color: #fff;
+}
+.msg.assistant .avatar {
+  background: var(--surface2); border: 1px solid var(--border2); font-size: 14px;
+}
+.msg-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.msg.user .msg-body { align-items: flex-end; }
+.bubble {
+  padding: 12px 15px; border-radius: 10px; line-height: 1.65;
+  font-size: 13.5px; word-break: break-word;
+}
+.msg.user .bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 3px; }
+.msg.assistant .bubble {
+  background: var(--surface); border: 1px solid var(--border2);
+  color: var(--text); border-bottom-left-radius: 3px;
+}
+.bubble p { margin-bottom: 7px; }
+.bubble p:last-child { margin-bottom: 0; }
+.bubble strong { color: var(--accent); font-weight: 600; }
+.bubble em { color: var(--text2); }
+.bubble code {
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: 4px;
+  padding: 1px 5px; font-family: var(--mono); font-size: 11.5px; color: #7dd3fc;
+}
+.bubble pre {
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: 7px;
+  padding: 12px; overflow-x: auto; margin: 8px 0;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.6; color: var(--text);
+}
+.msg-meta {
+  font-family: var(--mono); font-size: 10px; color: var(--text3); padding: 0 2px;
+}
+
+/* Sources */
+.src-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--mono); font-size: 10.5px; color: var(--text3);
+  padding: 0; transition: color .15s;
+}
+.src-btn:hover { color: var(--accent); }
+.src-arrow { display: inline-block; transition: transform .15s; }
+.src-btn.open .src-arrow { transform: rotate(90deg); }
+.src-panel {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; overflow: hidden; display: none; margin-top: 2px;
+}
+.src-panel.open { display: block; animation: slideDown .18s ease; }
+.src-item { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+.src-item:last-child { border-bottom: none; }
+.src-top { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+.src-idx {
+  font-family: var(--mono); font-size: 9.5px; color: var(--accent);
+  background: var(--accent-dim); border-radius: 3px; padding: 2px 5px; flex-shrink: 0;
+}
+.src-file {
+  font-family: var(--mono); font-size: 10.5px; color: var(--text2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.src-score {
+  font-family: var(--mono); font-size: 9.5px; color: var(--text3);
+  margin-left: auto; flex-shrink: 0;
+}
+.src-preview {
+  font-family: var(--mono); font-size: 10.5px; color: var(--text3); line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* Typing */
+.typing { display: flex; gap: 5px; align-items: center; padding: 2px 0; }
+.dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--text3);
+  animation: bounce 1.1s infinite;
+}
+.dot:nth-child(2) { animation-delay: .18s; }
+.dot:nth-child(3) { animation-delay: .36s; }
+
+/* ── INPUT BAR ────────────────────────────────────────────────────────── */
+#inputbar {
+  flex-shrink: 0; padding: 12px 20px 16px;
+  background: var(--bg); border-top: 1px solid var(--border);
+}
+.inputwrap {
+  display: flex; align-items: flex-end; gap: 9px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 10px 11px 10px 15px;
+  max-width: 860px; margin: 0 auto;
+  transition: border-color .15s, box-shadow .15s;
+}
+.inputwrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+#qinput {
+  flex: 1; background: none; border: none; outline: none; color: var(--text);
+  font-family: var(--sans); font-size: 14px; line-height: 1.5;
+  resize: none; min-height: 22px; max-height: 150px; overflow-y: auto;
+}
+#qinput::placeholder { color: var(--text3); }
+#sendbtn {
+  width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+  background: var(--accent); border: none; cursor: pointer; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .15s, transform .1s;
+}
+#sendbtn:hover { opacity: .85; }
+#sendbtn:active { transform: scale(.92); }
+#sendbtn:disabled { opacity: .35; cursor: not-allowed; }
+.hint {
+  max-width: 860px; margin: 5px auto 0; text-align: center;
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+}
+
+/* ── KEYFRAMES ────────────────────────────────────────────────────────── */
+@keyframes cardIn    { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
+@keyframes msgIn     { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+@keyframes spin      { to { transform: rotate(360deg); } }
+@keyframes bounce    { 0%,100% { transform: translateY(0); opacity: .35; } 50% { transform: translateY(-5px); opacity: 1; } }
+@keyframes shake     { 0%,100% { transform: translateX(0); } 25%,75% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
+
+@media (max-width: 640px) {
+  #app.on { grid-template-columns: 1fr; grid-template-areas: "bar" "chat"; }
+  #side { display: none; }
+  #messages { padding: 16px 14px; }
+  #inputbar { padding: 10px 12px 14px; }
+  .login-card { width: 90vw; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-lines"></div>
+  <div class="login-card">
+    <div class="login-eyebrow">Secure Access · RAG Chat</div>
+    <h1>Your docs,<br><span>your answers.</span></h1>
+    <p>Sign in with your client credentials to begin<br>chatting with your ingested documents.</p>
+
+    <div class="login-err" id="lerr"></div>
+
+    <div class="field">
+      <label>Client ID</label>
+      <input id="f-cid" type="text" placeholder="e.g. acme-corp" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="f-cpw" type="password" placeholder="••••••••••" />
+    </div>
+    <button id="btn-signin" onclick="doLogin()">
+      <span class="signin-label">Sign in</span>
+      <div class="spinner"></div>
+    </button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <div id="bar">
+    <div class="bar-logo">
+      <div class="bar-logo-mark">A</div>
+      Anuritmind
+    </div>
+    <div class="bar-right">
+      <div class="bar-pill">
+        <div class="pill-dot"></div>
+        <span id="bar-name">—</span>
+      </div>
+      <button id="btn-logout" onclick="doLogout()">Sign out</button>
+    </div>
+  </div>
+
+  <div id="side">
+    <div class="side-section">
+      <div class="side-label">Retrieval</div>
+      <div class="range-row">
+        <span>Top-K</span>
+        <div style="display:flex;align-items:center;gap:7px">
+          <input type="range" id="topk" min="1" max="15" value="5"
+            oninput="document.getElementById('topkv').textContent=this.value" />
+          <span class="rval" id="topkv">5</span>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <span>Show sources</span>
+        <label class="tog">
+          <input type="checkbox" id="show-src" checked />
+          <div class="tog-track"></div>
+          <div class="tog-thumb"></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Session</div>
+      <div class="status-block">
+        <div class="status-line">
+          <span class="status-ico">🤖</span>
+          <span>Gemini 2.5 Flash</span>
+        </div>
+        <div class="status-line">
+          <span class="status-ico">📦</span>
+          <span>Azure Blob Storage</span>
+        </div>
+        <div class="status-line">
+          <span class="status-ico">🔑</span>
+          <span id="side-cid">—</span>
+        </div>
+      </div>
+      <div id="retrieved-count"></div>
+    </div>
+
+    <div class="side-bottom">
+      <button id="btn-clear" onclick="clearChat()">Clear conversation</button>
+    </div>
+  </div>
+
+  <div id="chat">
+    <div id="empty">
+      <div class="empty-ring">💬</div>
+      <h2>Ask anything</h2>
+      <p>Your ingested documents are ready. Ask a question and get answers grounded in your data.</p>
+      <div class="chips">
+        <div class="chip" onclick="quickSend(this)">Summarise the key topics</div>
+        <div class="chip" onclick="quickSend(this)">What are the main findings?</div>
+        <div class="chip" onclick="quickSend(this)">List all important dates</div>
+        <div class="chip" onclick="quickSend(this)">What recommendations are made?</div>
+      </div>
+    </div>
+
+    <div id="messages" style="display:none"></div>
+
+    <div id="inputbar">
+      <div class="inputwrap">
+        <textarea id="qinput" rows="1"
+          placeholder="Ask a question about your documents…"
+          onkeydown="onKey(event)"
+          oninput="grow(this)"></textarea>
+        <button id="sendbtn" onclick="send()" title="Send">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <div class="hint">Enter to send · Shift+Enter for new line</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'https://anuritchatbackend.vercel.app'
+
+let sess = null
+let msgs = []
+let busy = false
+
+async function doLogin() {
+  const cid = document.getElementById('f-cid').value.trim()
+  const cpw = document.getElementById('f-cpw').value
+  const btn = document.getElementById('btn-signin')
+
+  if (!cid || !cpw) return showErr('Enter your Client ID and password.')
+
+  btn.classList.add('loading')
+  btn.disabled = true
+  document.getElementById('lerr').classList.remove('show')
+
+  try {
+    const r = await fetch(`${API}/chat/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientId: cid, clientPassword: cpw }),
+    })
+    const d = await r.json()
+    if (!r.ok) throw new Error(d.error || 'Login failed')
+
+    sess = {
+      clientId: d.client.clientId,
+      clientPassword: cpw,
+      name: d.client.name,
+      username: d.client.clientUsername,
+    }
+    bootApp()
+  } catch (e) {
+    showErr(e.message || 'Could not connect. Try again.')
+  } finally {
+    btn.classList.remove('loading')
+    btn.disabled = false
+  }
+}
+
+function showErr(msg) {
+  const el = document.getElementById('lerr')
+  el.textContent = msg
+  el.classList.add('show')
+}
+
+document.getElementById('f-cid').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin() })
+document.getElementById('f-cpw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin() })
+
+function bootApp() {
+  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('app').classList.add('on')
+  document.getElementById('bar-name').textContent = sess.name || sess.username || sess.clientId
+  document.getElementById('side-cid').textContent = sess.clientId
+  setTimeout(() => document.getElementById('qinput').focus(), 150)
+}
+
+function doLogout() {
+  sess = null
+  msgs = []
+  busy = false
+  document.getElementById('login-screen').style.display = 'flex'
+  document.getElementById('app').classList.remove('on')
+  document.getElementById('f-cid').value = ''
+  document.getElementById('f-cpw').value = ''
+  document.getElementById('lerr').classList.remove('show')
+  document.getElementById('messages').innerHTML = ''
+  document.getElementById('messages').style.display = 'none'
+  document.getElementById('empty').classList.remove('gone')
+  document.getElementById('retrieved-count').textContent = ''
+}
+
+async function send(text) {
+  const inp = document.getElementById('qinput')
+  const q = (text || inp.value).trim()
+  if (!q || busy || !sess) return
+
+  inp.value = ''
+  grow(inp)
+  busy = true
+  document.getElementById('sendbtn').disabled = true
+
+  document.getElementById('empty').classList.add('gone')
+  const msgbox = document.getElementById('messages')
+  msgbox.style.display = 'flex'
+  msgbox.style.flexDirection = 'column'
+  msgbox.style.gap = '22px'
+
+  msgs.push({ role: 'user', content: q })
+  appendMsg({ role: 'user', content: q }, msgbox)
+
+  const tid = 'ty' + Date.now()
+  msgbox.insertAdjacentHTML('beforeend', `
+    <div class="msg assistant" id="${tid}">
+      <div class="avatar">🤖</div>
+      <div class="msg-body">
+        <div class="bubble">
+          <div class="typing">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>`)
+  scrollBottom()
+
+  const topK = parseInt(document.getElementById('topk').value, 10)
+  const showSrc = document.getElementById('show-src').checked
+
+  try {
+    const r = await fetch(`${API}/chat/message`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        clientId: sess.clientId,
+        clientPassword: sess.clientPassword,
+        query: q,
+        topK,
+      }),
+    })
+    const d = await r.json()
+    if (!r.ok) throw new Error(d.error || 'Request failed')
+
+    if (d.sources?.length) {
+      document.getElementById('retrieved-count').textContent =
+        `↳ ${d.sources.length} chunk${d.sources.length !== 1 ? 's' : ''} retrieved`
+    }
+
+    document.getElementById(tid)?.remove()
+    msgs.push({ role: 'assistant', content: d.answer, sources: showSrc ? (d.sources || []) : [] })
+    appendMsg({ role: 'assistant', content: d.answer, sources: showSrc ? (d.sources || []) : [] }, msgbox)
+  } catch (e) {
+    document.getElementById(tid)?.remove()
+    appendMsg({ role: 'assistant', content: `Error: ${e.message || 'Something went wrong.'}`, sources: [] }, msgbox)
+  } finally {
+    busy = false
+    document.getElementById('sendbtn').disabled = false
+    scrollBottom()
+    document.getElementById('qinput').focus()
+  }
+}
+
+function quickSend(el) {
+  send(el.textContent.trim())
+}
+
+function clearChat() {
+  msgs = []
+  document.getElementById('messages').innerHTML = ''
+  document.getElementById('messages').style.display = 'none'
+  document.getElementById('empty').classList.remove('gone')
+  document.getElementById('retrieved-count').textContent = ''
+}
+
+function appendMsg(msg, box) {
+  const isUser = msg.role === 'user'
+  const av = isUser ? (sess?.name?.[0]?.toUpperCase() || 'U') : '🤖'
+  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+  let srcHtml = ''
+  if (!isUser && msg.sources?.length) {
+    const uid = 'sp' + Date.now() + Math.random().toString(36).slice(2, 6)
+    const items = msg.sources.map((s, i) => `
+      <div class="src-item">
+        <div class="src-top">
+          <span class="src-idx">[${i + 1}]</span>
+          <span class="src-file">${esc(s.source_file || 'unknown')}</span>
+          <span class="src-score">${s.score != null ? s.score.toFixed(4) : '—'}</span>
+        </div>
+        <div class="src-preview">${esc(s.preview || '')}</div>
+      </div>`).join('')
+
+    srcHtml = `
+      <button class="src-btn" onclick="toggleSrc('${uid}',this)">
+        <span class="src-arrow">›</span>&nbsp;${msg.sources.length} source${msg.sources.length !== 1 ? 's' : ''}
+      </button>
+      <div class="src-panel" id="${uid}">${items}</div>`
+  }
+
+  box.insertAdjacentHTML('beforeend', `
+    <div class="msg ${msg.role}">
+      <div class="avatar">${av}</div>
+      <div class="msg-body">
+        <div class="bubble">${md(msg.content)}</div>
+        ${srcHtml}
+        <div class="msg-meta">${now}</div>
+      </div>
+    </div>`)
+  scrollBottom()
+}
+
+function toggleSrc(uid, btn) {
+  document.getElementById(uid).classList.toggle('open')
+  btn.classList.toggle('open')
+}
+
+function md(t) {
+  if (!t) return ''
+  let s = esc(t)
+  s = s.replace(/```[\s\S]*?```/g, m => {
+    const code = m.replace(/^```\w*\n?/, '').replace(/\n?```$/, '')
+    return `<pre><code>${code}</code></pre>`
+  })
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>')
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  s = s.replace(/\*(.+?)\*/g, '<em>$1</em>')
+  return s.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+function scrollBottom() {
+  const b = document.getElementById('messages')
+  if (b) b.scrollTop = b.scrollHeight
+}
+
+function onKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
+}
+
+function grow(el) {
+  el.style.height = 'auto'
+  el.style.height = Math.min(el.scrollHeight, 150) + 'px'
+}
+</script>
+</body>
+</html>
