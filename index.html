@@ -44,7 +44,6 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   background: var(--bg);
 }
-
 .login-lines {
   position: absolute; inset: 0; pointer-events: none;
   background: repeating-linear-gradient(
@@ -52,12 +51,10 @@ html, body {
     rgba(79,140,255,0.03) 39px, rgba(79,140,255,0.03) 40px
   );
 }
-
 .login-card {
   position: relative; width: 420px;
   animation: cardIn .5s cubic-bezier(.16,1,.3,1) both;
 }
-
 .login-eyebrow {
   font-family: var(--mono); font-size: 10px; letter-spacing: .15em;
   text-transform: uppercase; color: var(--text3); margin-bottom: 32px;
@@ -66,18 +63,15 @@ html, body {
 .login-eyebrow::before {
   content: ''; display: block; width: 24px; height: 1px; background: var(--accent);
 }
-
 .login-card h1 {
   font-size: 38px; font-weight: 800; line-height: 1.05;
   letter-spacing: -.03em; color: var(--text); margin-bottom: 10px;
 }
 .login-card h1 span { color: var(--accent); }
-
 .login-card p {
   font-family: var(--mono); font-size: 12px; color: var(--text3);
   line-height: 1.7; margin-bottom: 40px;
 }
-
 .field { margin-bottom: 16px; }
 .field label {
   display: block; font-family: var(--mono); font-size: 10px;
@@ -91,14 +85,12 @@ html, body {
 }
 .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 .field input::placeholder { color: var(--text3); }
-
 .login-err {
   font-family: var(--mono); font-size: 11.5px; color: var(--red);
   background: rgba(255,95,95,.08); border: 1px solid rgba(255,95,95,.2);
   border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; display: none;
 }
 .login-err.show { display: block; animation: shake .25s ease; }
-
 #btn-signin {
   width: 100%; padding: 14px; border: none; border-radius: 6px;
   background: var(--accent); cursor: pointer;
@@ -109,7 +101,6 @@ html, body {
 #btn-signin:hover { opacity: .88; }
 #btn-signin:active { transform: scale(.98); }
 #btn-signin:disabled { opacity: .45; cursor: not-allowed; }
-
 .spinner {
   width: 15px; height: 15px; border-radius: 50%;
   border: 2px solid rgba(255,255,255,.25); border-top-color: #fff;
@@ -122,8 +113,8 @@ html, body {
 #app {
   display: none; height: 100vh;
   grid-template-rows: 52px 1fr;
-  grid-template-columns: 240px 1fr;
-  grid-template-areas: "bar bar" "side chat";
+  grid-template-columns: 240px 260px 1fr;
+  grid-template-areas: "bar bar bar" "side history chat";
 }
 #app.on { display: grid; animation: fadeIn .3s ease; }
 
@@ -162,7 +153,7 @@ html, body {
 }
 #btn-logout:hover { border-color: var(--red); color: var(--red); }
 
-/* ── SIDEBAR ──────────────────────────────────────────────────────────── */
+/* ── SETTINGS SIDEBAR ─────────────────────────────────────────────────── */
 #side {
   grid-area: side;
   background: var(--surface); border-right: 1px solid var(--border);
@@ -200,7 +191,6 @@ input[type=range]::-webkit-slider-thumb {
 }
 .tog input:checked ~ .tog-track { background: var(--accent); }
 .tog input:checked ~ .tog-thumb { transform: translateX(14px); }
-
 .status-block {
   background: var(--bg2); border: 1px solid var(--border);
   border-radius: 8px; padding: 10px 12px; margin-top: 4px;
@@ -226,6 +216,97 @@ input[type=range]::-webkit-slider-thumb {
   transition: border-color .15s, color .15s;
 }
 #btn-clear:hover { border-color: var(--red); color: var(--red); }
+
+/* ── HISTORY PANEL ────────────────────────────────────────────────────── */
+#history-panel {
+  grid-area: history;
+  background: var(--bg2); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.history-head {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.history-head-label {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--text3);
+}
+#btn-new-chat {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--accent-dim); border: 1px solid rgba(79,140,255,0.3);
+  border-radius: 5px; padding: 5px 10px; cursor: pointer;
+  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  letter-spacing: .04em; transition: background .15s, border-color .15s;
+}
+#btn-new-chat:hover { background: rgba(79,140,255,0.2); border-color: var(--accent); }
+
+#history-list {
+  flex: 1; overflow-y: auto; padding: 8px 8px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.history-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 100%; gap: 8px; padding: 20px;
+  text-align: center;
+}
+.history-empty-icon { font-size: 24px; opacity: .4; }
+.history-empty p {
+  font-family: var(--mono); font-size: 10.5px; color: var(--text3); line-height: 1.6;
+}
+
+/* History item */
+.hist-item {
+  display: flex; align-items: center; gap: 0;
+  border-radius: 7px; cursor: pointer;
+  transition: background .12s; position: relative;
+  border: 1px solid transparent;
+}
+.hist-item:hover { background: var(--surface2); border-color: var(--border); }
+.hist-item.active {
+  background: var(--accent-dim); border-color: rgba(79,140,255,0.3);
+}
+.hist-item-body {
+  flex: 1; padding: 9px 10px; min-width: 0;
+}
+.hist-item-title {
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  color: var(--text); white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; margin-bottom: 3px;
+}
+.hist-item.active .hist-item-title { color: var(--accent); }
+.hist-item-meta {
+  font-family: var(--mono); font-size: 9.5px; color: var(--text3);
+}
+.hist-item-actions {
+  display: none; flex-shrink: 0; align-items: center; gap: 2px;
+  padding-right: 6px;
+}
+.hist-item:hover .hist-item-actions { display: flex; }
+.hist-act-btn {
+  background: none; border: none; cursor: pointer; padding: 4px 5px;
+  border-radius: 4px; font-size: 11px; color: var(--text3);
+  transition: color .12s, background .12s;
+}
+.hist-act-btn:hover { color: var(--text); background: var(--border2); }
+.hist-act-btn.del:hover { color: var(--red); background: rgba(255,95,95,.1); }
+
+/* Rename input inline */
+.hist-rename-input {
+  width: 100%; background: var(--surface2); border: 1px solid var(--accent);
+  border-radius: 4px; padding: 4px 7px; color: var(--text);
+  font-family: var(--sans); font-size: 12px; font-weight: 600; outline: none;
+}
+
+/* Loading skeletons for history */
+.hist-skeleton {
+  height: 52px; border-radius: 7px;
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
 
 /* ── CHAT AREA ────────────────────────────────────────────────────────── */
 #chat {
@@ -399,9 +480,9 @@ input[type=range]::-webkit-slider-thumb {
 @keyframes bounce    { 0%,100% { transform: translateY(0); opacity: .35; } 50% { transform: translateY(-5px); opacity: 1; } }
 @keyframes shake     { 0%,100% { transform: translateX(0); } 25%,75% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   #app.on { grid-template-columns: 1fr; grid-template-areas: "bar" "chat"; }
-  #side { display: none; }
+  #side, #history-panel { display: none; }
   #messages { padding: 16px 14px; }
   #inputbar { padding: 10px 12px 14px; }
   .login-card { width: 90vw; }
@@ -417,9 +498,7 @@ input[type=range]::-webkit-slider-thumb {
     <div class="login-eyebrow">Secure Access · RAG Chat</div>
     <h1>Your docs,<br><span>your answers.</span></h1>
     <p>Sign in with your client credentials to begin<br>chatting with your ingested documents.</p>
-
     <div class="login-err" id="lerr"></div>
-
     <div class="field">
       <label>Client ID</label>
       <input id="f-cid" type="text" placeholder="e.g. acme-corp" autocomplete="off" spellcheck="false" />
@@ -452,6 +531,7 @@ input[type=range]::-webkit-slider-thumb {
     </div>
   </div>
 
+  <!-- Settings sidebar -->
   <div id="side">
     <div class="side-section">
       <div class="side-label">Retrieval</div>
@@ -472,7 +552,6 @@ input[type=range]::-webkit-slider-thumb {
         </label>
       </div>
     </div>
-
     <div class="side-section">
       <div class="side-label">Session</div>
       <div class="status-block">
@@ -495,12 +574,29 @@ input[type=range]::-webkit-slider-thumb {
       </div>
       <div id="retrieved-count"></div>
     </div>
-
     <div class="side-bottom">
       <button id="btn-clear" onclick="clearChat()">Clear conversation</button>
     </div>
   </div>
 
+  <!-- Chat History Panel -->
+  <div id="history-panel">
+    <div class="history-head">
+      <span class="history-head-label">Chat History</span>
+      <button id="btn-new-chat" onclick="startNewChat()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Chat
+      </button>
+    </div>
+    <div id="history-list">
+      <div class="history-empty" id="history-empty">
+        <div class="history-empty-icon">💬</div>
+        <p>No conversations yet.<br>Start chatting to see history here.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat -->
   <div id="chat">
     <div id="empty">
       <div class="empty-ring">💬</div>
@@ -513,9 +609,7 @@ input[type=range]::-webkit-slider-thumb {
         <div class="chip" onclick="quickSend(this)">What recommendations are made?</div>
       </div>
     </div>
-
     <div id="messages" style="display:none"></div>
-
     <div id="inputbar">
       <div class="inputwrap">
         <textarea id="qinput" rows="1"
@@ -542,18 +636,17 @@ const API = 'https://anuritchatbackend.vercel.app'
 let sess = null
 let msgs = []
 let busy = false
+let activeConversationId = null  // current open conversation
+let conversations = []           // list cache
 
+// ── LOGIN ──────────────────────────────────────────────────────────────────
 async function doLogin() {
   const cid = document.getElementById('f-cid').value.trim()
   const cpw = document.getElementById('f-cpw').value
   const btn = document.getElementById('btn-signin')
-
   if (!cid || !cpw) return showErr('Enter your Client ID and password.')
-
-  btn.classList.add('loading')
-  btn.disabled = true
+  btn.classList.add('loading'); btn.disabled = true
   document.getElementById('lerr').classList.remove('show')
-
   try {
     const r = await fetch(`${API}/chat/login`, {
       method: 'POST',
@@ -562,26 +655,18 @@ async function doLogin() {
     })
     const d = await r.json()
     if (!r.ok) throw new Error(d.error || 'Login failed')
-
-    sess = {
-      clientId: d.client.clientId,
-      clientPassword: cpw,
-      name: d.client.name,
-      username: d.client.clientUsername,
-    }
+    sess = { clientId: d.client.clientId, clientPassword: cpw, name: d.client.name, username: d.client.clientUsername }
     bootApp()
   } catch (e) {
     showErr(e.message || 'Could not connect. Try again.')
   } finally {
-    btn.classList.remove('loading')
-    btn.disabled = false
+    btn.classList.remove('loading'); btn.disabled = false
   }
 }
 
 function showErr(msg) {
   const el = document.getElementById('lerr')
-  el.textContent = msg
-  el.classList.add('show')
+  el.textContent = msg; el.classList.add('show')
 }
 
 document.getElementById('f-cid').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin() })
@@ -592,13 +677,12 @@ function bootApp() {
   document.getElementById('app').classList.add('on')
   document.getElementById('bar-name').textContent = sess.name || sess.username || sess.clientId
   document.getElementById('side-cid').textContent = sess.clientId
+  loadHistoryList()
   setTimeout(() => document.getElementById('qinput').focus(), 150)
 }
 
 function doLogout() {
-  sess = null
-  msgs = []
-  busy = false
+  sess = null; msgs = []; busy = false; activeConversationId = null; conversations = []
   document.getElementById('login-screen').style.display = 'flex'
   document.getElementById('app').classList.remove('on')
   document.getElementById('f-cid').value = ''
@@ -608,19 +692,204 @@ function doLogout() {
   document.getElementById('messages').style.display = 'none'
   document.getElementById('empty').classList.remove('gone')
   document.getElementById('retrieved-count').textContent = ''
+  document.getElementById('history-list').innerHTML = ''
+  renderHistoryEmpty()
 }
 
+// ── HISTORY LIST ───────────────────────────────────────────────────────────
+function renderHistoryEmpty() {
+  const list = document.getElementById('history-list')
+  list.innerHTML = `
+    <div class="history-empty" id="history-empty">
+      <div class="history-empty-icon">💬</div>
+      <p>No conversations yet.<br>Start chatting to see history here.</p>
+    </div>`
+}
+
+function renderHistorySkeletons() {
+  const list = document.getElementById('history-list')
+  list.innerHTML = [1,2,3].map(() => `<div class="hist-skeleton"></div>`).join('')
+}
+
+async function loadHistoryList() {
+  if (!sess) return
+  renderHistorySkeletons()
+  try {
+    const r = await fetch(`${API}/chat/conversations/list`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientId: sess.clientId, clientPassword: sess.clientPassword }),
+    })
+    const d = await r.json()
+    if (!r.ok) throw new Error(d.error)
+    conversations = d.conversations || []
+    renderHistoryList()
+  } catch (e) {
+    console.warn('History load failed:', e.message)
+    renderHistoryEmpty()
+  }
+}
+
+function renderHistoryList() {
+  const list = document.getElementById('history-list')
+  if (!conversations.length) { renderHistoryEmpty(); return }
+  list.innerHTML = conversations.map(c => buildHistItem(c)).join('')
+}
+
+function buildHistItem(c) {
+  const date = formatHistDate(c.updatedAt || c.createdAt)
+  const isActive = c._id === activeConversationId
+  return `
+    <div class="hist-item ${isActive ? 'active' : ''}" id="hi-${c._id}" onclick="openConversation('${c._id}')">
+      <div class="hist-item-body">
+        <div class="hist-item-title" id="hit-${c._id}">${esc(c.title || 'Untitled')}</div>
+        <div class="hist-item-meta">${date}</div>
+      </div>
+      <div class="hist-item-actions">
+        <button class="hist-act-btn" title="Rename" onclick="startRename(event,'${c._id}')">✏️</button>
+        <button class="hist-act-btn del" title="Delete" onclick="deleteConversation(event,'${c._id}')">🗑️</button>
+      </div>
+    </div>`
+}
+
+function formatHistDate(iso) {
+  if (!iso) return ''
+  const d = new Date(iso), now = new Date()
+  const diffMs = now - d, diffDays = Math.floor(diffMs / 86400000)
+  if (diffDays === 0) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  if (diffDays === 1) return 'Yesterday'
+  if (diffDays < 7)  return d.toLocaleDateString([], { weekday: 'short' })
+  return d.toLocaleDateString([], { month: 'short', day: 'numeric' })
+}
+
+function setActiveHistItem(id) {
+  document.querySelectorAll('.hist-item').forEach(el => el.classList.remove('active'))
+  const el = document.getElementById(`hi-${id}`)
+  if (el) el.classList.add('active')
+}
+
+// ── OPEN EXISTING CONVERSATION ─────────────────────────────────────────────
+async function openConversation(id) {
+  if (busy) return
+  if (activeConversationId === id) return
+  try {
+    const r = await fetch(`${API}/chat/conversations/get`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientId: sess.clientId, clientPassword: sess.clientPassword, conversationId: id }),
+    })
+    const d = await r.json()
+    if (!r.ok) throw new Error(d.error)
+
+    activeConversationId = id
+    msgs = d.messages || []
+
+    // Render messages
+    const msgbox = document.getElementById('messages')
+    msgbox.innerHTML = ''
+    document.getElementById('empty').classList.add('gone')
+    msgbox.style.display = 'flex'
+    msgbox.style.flexDirection = 'column'
+    msgbox.style.gap = '22px'
+
+    const showSrc = document.getElementById('show-src').checked
+    for (const m of msgs) {
+      appendMsg({
+        role: m.role,
+        content: m.content,
+        sources: m.role === 'assistant' && showSrc ? (m.sources || []) : [],
+        timestamp: m.timestamp,
+      }, msgbox)
+    }
+    setActiveHistItem(id)
+    scrollBottom()
+  } catch (e) {
+    console.warn('Open conversation failed:', e.message)
+  }
+}
+
+// ── NEW CHAT ───────────────────────────────────────────────────────────────
+function startNewChat() {
+  activeConversationId = null
+  msgs = []
+  const msgbox = document.getElementById('messages')
+  msgbox.innerHTML = ''
+  msgbox.style.display = 'none'
+  document.getElementById('empty').classList.remove('gone')
+  document.getElementById('retrieved-count').textContent = ''
+  document.querySelectorAll('.hist-item').forEach(el => el.classList.remove('active'))
+  document.getElementById('qinput').focus()
+}
+
+// ── RENAME ─────────────────────────────────────────────────────────────────
+function startRename(e, id) {
+  e.stopPropagation()
+  const titleEl = document.getElementById(`hit-${id}`)
+  if (!titleEl) return
+  const oldTitle = titleEl.textContent
+  titleEl.innerHTML = `<input class="hist-rename-input" value="${esc(oldTitle)}" id="rename-inp-${id}" />`
+  const inp = document.getElementById(`rename-inp-${id}`)
+  inp.focus(); inp.select()
+  inp.addEventListener('keydown', async ev => {
+    if (ev.key === 'Enter') { ev.preventDefault(); await commitRename(id, inp.value.trim(), oldTitle) }
+    if (ev.key === 'Escape') { titleEl.textContent = oldTitle }
+  })
+  inp.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (document.getElementById(`rename-inp-${id}`)) commitRename(id, inp.value.trim(), oldTitle)
+    }, 150)
+  })
+}
+
+async function commitRename(id, newTitle, oldTitle) {
+  const titleEl = document.getElementById(`hit-${id}`)
+  if (!newTitle || newTitle === oldTitle) { if (titleEl) titleEl.textContent = oldTitle; return }
+  try {
+    const r = await fetch(`${API}/chat/conversations/rename`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientId: sess.clientId, clientPassword: sess.clientPassword, conversationId: id, title: newTitle }),
+    })
+    if (!r.ok) throw new Error()
+    if (titleEl) titleEl.textContent = newTitle
+    const c = conversations.find(x => x._id === id)
+    if (c) c.title = newTitle
+  } catch {
+    if (titleEl) titleEl.textContent = oldTitle
+  }
+}
+
+// ── DELETE ─────────────────────────────────────────────────────────────────
+async function deleteConversation(e, id) {
+  e.stopPropagation()
+  if (!confirm('Delete this conversation?')) return
+  try {
+    const r = await fetch(`${API}/chat/conversations/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientId: sess.clientId, clientPassword: sess.clientPassword, conversationId: id }),
+    })
+    if (!r.ok) throw new Error()
+    conversations = conversations.filter(c => c._id !== id)
+    document.getElementById(`hi-${id}`)?.remove()
+    if (!conversations.length) renderHistoryEmpty()
+    if (activeConversationId === id) startNewChat()
+  } catch (e) {
+    alert('Failed to delete conversation.')
+  }
+}
+
+// ── SEND MESSAGE ───────────────────────────────────────────────────────────
 async function send(text) {
   const inp = document.getElementById('qinput')
   const q = (text || inp.value).trim()
   if (!q || busy || !sess) return
 
-  inp.value = ''
-  grow(inp)
+  inp.value = ''; grow(inp)
   busy = true
   document.getElementById('sendbtn').disabled = true
-
   document.getElementById('empty').classList.add('gone')
+
   const msgbox = document.getElementById('messages')
   msgbox.style.display = 'flex'
   msgbox.style.flexDirection = 'column'
@@ -655,10 +924,19 @@ async function send(text) {
         clientPassword: sess.clientPassword,
         query: q,
         topK,
+        conversationId: activeConversationId,  // pass current convo ID (null = new)
       }),
     })
     const d = await r.json()
     if (!r.ok) throw new Error(d.error || 'Request failed')
+
+    // Update active conversation ID (new convo gets one back from server)
+    if (d.conversationId && !activeConversationId) {
+      activeConversationId = d.conversationId
+      // Reload history list to show new conversation
+      await loadHistoryList()
+      setActiveHistItem(activeConversationId)
+    }
 
     if (d.sources?.length) {
       document.getElementById('retrieved-count').textContent =
@@ -668,6 +946,10 @@ async function send(text) {
     document.getElementById(tid)?.remove()
     msgs.push({ role: 'assistant', content: d.answer, sources: showSrc ? (d.sources || []) : [] })
     appendMsg({ role: 'assistant', content: d.answer, sources: showSrc ? (d.sources || []) : [] }, msgbox)
+
+    // Update the timestamp on the history item
+    refreshHistItemTime(activeConversationId)
+
   } catch (e) {
     document.getElementById(tid)?.remove()
     appendMsg({ role: 'assistant', content: `Error: ${e.message || 'Something went wrong.'}`, sources: [] }, msgbox)
@@ -679,22 +961,28 @@ async function send(text) {
   }
 }
 
-function quickSend(el) {
-  send(el.textContent.trim())
+function refreshHistItemTime(id) {
+  if (!id) return
+  const c = conversations.find(x => x._id === id || x._id?.toString() === id)
+  if (c) {
+    c.updatedAt = new Date().toISOString()
+    const metaEl = document.querySelector(`#hi-${id} .hist-item-meta`)
+    if (metaEl) metaEl.textContent = formatHistDate(c.updatedAt)
+  }
 }
+
+function quickSend(el) { send(el.textContent.trim()) }
 
 function clearChat() {
-  msgs = []
-  document.getElementById('messages').innerHTML = ''
-  document.getElementById('messages').style.display = 'none'
-  document.getElementById('empty').classList.remove('gone')
-  document.getElementById('retrieved-count').textContent = ''
+  startNewChat()
 }
 
+// ── RENDER MESSAGE ─────────────────────────────────────────────────────────
 function appendMsg(msg, box) {
   const isUser = msg.role === 'user'
   const av = isUser ? (sess?.name?.[0]?.toUpperCase() || 'U') : '🤖'
-  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const ts = msg.timestamp ? new Date(msg.timestamp) : new Date()
+  const now = ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 
   let srcHtml = ''
   if (!isUser && msg.sources?.length) {
@@ -708,7 +996,6 @@ function appendMsg(msg, box) {
         </div>
         <div class="src-preview">${esc(s.preview || '')}</div>
       </div>`).join('')
-
     srcHtml = `
       <button class="src-btn" onclick="toggleSrc('${uid}',this)">
         <span class="src-arrow">›</span>&nbsp;${msg.sources.length} source${msg.sources.length !== 1 ? 's' : ''}
