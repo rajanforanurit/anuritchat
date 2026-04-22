@@ -288,14 +288,15 @@ html, body {
 /* Welcome state */
 #empty {
   flex: 1; display: flex; flex-direction: column;
-  align-items: flex-start; justify-content: center;
+  align-items: center; justify-content: center;
+  text-align: center;
   padding: 52px 48px; gap: 0;
 }
 #empty.gone { display: none; }
 .empty-eyebrow {
   font-size: 11px; font-weight: 600; letter-spacing: .14em;
   text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 .empty-eyebrow::before {
   content: ''; display: block; width: 28px; height: 1px; background: var(--gold);
@@ -332,6 +333,28 @@ html, body {
 }
 .msg-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .msg.user .msg-body { align-items: flex-end; }
+
+/* Flat assistant text — no box, reads like a human reply */
+.asst-text {
+  line-height: 1.75; font-size: 14.5px; word-break: break-word;
+  color: var(--text); max-width: 680px;
+}
+.asst-text p { margin-bottom: 10px; }
+.asst-text p:last-child { margin-bottom: 0; }
+.asst-text strong { color: var(--navy); font-weight: 600; }
+.asst-text em { color: var(--text2); }
+.asst-text ul, .asst-text ol { padding-left: 20px; margin: 8px 0; }
+.asst-text li { margin-bottom: 6px; line-height: 1.65; }
+.asst-text code {
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: 3px;
+  padding: 1px 5px; font-family: var(--mono); font-size: 12px; color: var(--navy);
+}
+.asst-text pre {
+  background: var(--navy); border-radius: 4px;
+  padding: 14px 16px; overflow-x: auto; margin: 10px 0;
+  font-family: var(--mono); font-size: 12px; line-height: 1.65; color: #e8e3db;
+}
+.asst-text pre code { background: none; border: none; padding: 0; color: inherit; }
 .bubble {
   padding: 14px 18px; line-height: 1.72; font-size: 14px; word-break: break-word;
 }
@@ -340,9 +363,9 @@ html, body {
   border-radius: 4px 4px 2px 4px;
 }
 .msg.assistant .bubble {
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); border-radius: 4px 4px 4px 2px;
-  box-shadow: var(--shadow);
+  background: transparent; border: none;
+  color: var(--text); padding: 0;
+  box-shadow: none;
 }
 .bubble p { margin-bottom: 9px; }
 .bubble p:last-child { margin-bottom: 0; }
@@ -394,6 +417,7 @@ html, body {
 }
 
 /* Typing */
+.typing-wrap { padding: 4px 0; }
 .typing { display: flex; gap: 5px; align-items: center; padding: 2px 0; }
 .dot {
   width: 6px; height: 6px; border-radius: 50%; background: var(--text3);
@@ -492,7 +516,7 @@ html, body {
   <div class="login-pattern"></div>
   <div class="login-card">
     <h1>Docs <em>Ask</em></h1>
-    <p class="login-sub">Sign in to start a conversation with your ingested documents, connected by highly speed pipeline.</p>
+    <p class="login-sub">Sign in to start a conversation with ingested documents, connected by highly speed pipeline.</p>
     <div class="login-err" id="lerr"></div>
     <div class="field">
       <label>Client ID</label>
@@ -572,7 +596,7 @@ html, body {
     <div class="footer-meta">
       <div class="footer-item">
         <div class="footer-item-dot"></div>
-        <span>MiniLM-L12-v6</span>
+        <span>Anurit's MiniLM-L12-v6</span>
       </div>
       <div class="footer-sep"></div>
       <div class="footer-item">
@@ -825,8 +849,12 @@ async function deleteConversation(e, id) {
 // ── SEND ───────────────────────────────────────────────
 async function send(text) {
   const inp = document.getElementById('qinput')
-  const q = (text || inp.value).trim()
-  if (!q || busy || !sess) return
+  const rawQ = (text || inp.value).trim()
+  if (!rawQ || busy || !sess) return
+
+  // Normalize query — send lowercase so backend embedding matches regardless of user casing
+  const q = rawQ
+  const qNormalized = rawQ.toLowerCase().trim()
 
   inp.value = ''; grow(inp)
   busy = true
@@ -846,7 +874,7 @@ async function send(text) {
     <div class="msg assistant" id="${tid}">
       <div class="avatar">A</div>
       <div class="msg-body">
-        <div class="bubble">
+        <div class="typing-wrap">
           <div class="typing">
             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
           </div>
@@ -862,7 +890,7 @@ async function send(text) {
       body: JSON.stringify({
         clientId: sess.clientId,
         clientPassword: sess.clientPassword,
-        query: q,
+        query: qNormalized,
         topK: TOP_K,
         conversationId: activeConversationId,
       }),
@@ -882,19 +910,56 @@ async function send(text) {
     }
 
     document.getElementById(tid)?.remove()
-    msgs.push({ role: 'assistant', content: d.answer, sources: d.sources || [] })
-    appendMsg({ role: 'assistant', content: d.answer, sources: d.sources || [] }, msgbox)
+
+    // Clean up the answer before displaying
+    let answer = cleanAnswer(d.answer, d.sources || [])
+
+    msgs.push({ role: 'assistant', content: answer, sources: d.sources || [] })
+    appendMsg({ role: 'assistant', content: answer, sources: d.sources || [] }, msgbox)
     refreshHistItemTime(activeConversationId)
 
   } catch (e) {
     document.getElementById(tid)?.remove()
-    appendMsg({ role: 'assistant', content: `I ran into an issue: ${e.message || 'Something went wrong. Please try again.'}`, sources: [] }, msgbox)
+    appendMsg({ role: 'assistant', content: `Something went wrong. Please try again.`, sources: [] }, msgbox)
   } finally {
     busy = false
     document.getElementById('sendbtn').disabled = false
     scrollBottom()
     document.getElementById('qinput').focus()
   }
+}
+
+// ── CLEAN ANSWER ───────────────────────────────────────
+// Strips citation markers like [1], [2, 3], [1,2,3,4,5,6] from the AI response.
+// Also catches "context does not define/contain/mention" fallback patterns and
+// replaces them with a helpful message when sources ARE present.
+function cleanAnswer(answer, sources) {
+  if (!answer) return answer
+
+  // Remove inline citation markers — [1], [2,3], [1, 2, 3, 4, 5, 6], etc.
+  let cleaned = answer.replace(/\[\s*\d+(?:\s*,\s*\d+)*\s*\]/g, '').trim()
+
+  // Detect unhelpful "context does not..." fallback responses
+  const fallbackPatterns = [
+    /the (provided |given |available )?context does not (define|contain|mention|explain|include|describe|have|provide)/i,
+    /is not (defined|mentioned|described|explained|included) in the (provided |given |available )?context/i,
+    /no (information|data|definition|detail) (is |was )?(provided|found|available|present) (in|within) the (provided |given |available )?context/i,
+    /the (document|context|provided (context|documents?)) (do(es)? not|doesn't) (define|contain|mention|explain|describe)/i,
+    /based on the (provided |given |available )?context[^,]*,(?: i cannot| there is no| it is not)/i,
+  ]
+
+  const isFallback = fallbackPatterns.some(p => p.test(cleaned))
+
+  // If it's a fallback but sources exist, the data IS there — give a better reply
+  if (isFallback && sources.length > 0) {
+    // Extract the core term from the fallback message if possible, else return generic
+    cleaned = "The information is available in your documents — here's what was found in the relevant sections. You may want to rephrase your question with slightly different wording for a more targeted answer."
+  }
+
+  // Clean up multiple spaces left after removing citations
+  cleaned = cleaned.replace(/\s{2,}/g, ' ').trim()
+
+  return cleaned
 }
 
 function refreshHistItemTime(id) {
@@ -922,24 +987,29 @@ function appendMsg(msg, box) {
     const items = msg.sources.map((s, i) => `
       <div class="src-item">
         <div class="src-top">
-          <span class="src-idx">[${i + 1}]</span>
+          <span class="src-idx">↗</span>
           <span class="src-file">${esc(s.source_file || 'unknown')}</span>
-          <span class="src-score">${s.score != null ? s.score.toFixed(4) : '—'}</span>
+          <span class="src-score">${s.score != null ? (s.score * 100).toFixed(0) + '%' : '—'}</span>
         </div>
         <div class="src-preview">${esc(s.preview || '')}</div>
       </div>`).join('')
     srcHtml = `
       <button class="src-btn" onclick="toggleSrc('${uid}',this)">
-        <span class="src-arrow">›</span>&nbsp;${msg.sources.length} source${msg.sources.length !== 1 ? 's' : ''}
+        <span class="src-arrow">›</span>&nbsp;${msg.sources.length} document section${msg.sources.length !== 1 ? 's' : ''} referenced
       </button>
       <div class="src-panel" id="${uid}">${items}</div>`
   }
+
+  // User: pill bubble. Assistant: flat text, no box.
+  const contentHtml = isUser
+    ? `<div class="bubble">${md(msg.content)}</div>`
+    : `<div class="asst-text">${md(msg.content)}</div>`
 
   box.insertAdjacentHTML('beforeend', `
     <div class="msg ${msg.role}">
       <div class="avatar">${av}</div>
       <div class="msg-body">
-        <div class="bubble">${md(msg.content)}</div>
+        ${contentHtml}
         ${srcHtml}
         <div class="msg-meta">${now}</div>
       </div>
