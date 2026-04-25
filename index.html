@@ -42,9 +42,6 @@ html, body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 99px; }
 
-/* ═══════════════════════════════════════════════════
-   LOGIN
-═══════════════════════════════════════════════════ */
 #login-screen {
   position: fixed; inset: 0; z-index: 200;
   display: flex; align-items: center; justify-content: center;
@@ -54,7 +51,6 @@ html, body {
     radial-gradient(ellipse 50% 40% at 85% 15%, rgba(107,159,255,0.05) 0%, transparent 50%);
 }
 
-/* Subtle dot grid */
 .login-grid {
   position: absolute; inset: 0; pointer-events: none;
   background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
@@ -71,7 +67,6 @@ html, body {
   animation: cardIn .5s cubic-bezier(.16,1,.3,1) both;
 }
 
-/* Top accent line */
 .login-card::before {
   content: '';
   position: absolute; top: 0; left: 24px; right: 24px; height: 1px;
@@ -79,9 +74,7 @@ html, body {
   border-radius: 99px;
 }
 
-.login-brand {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 32px;
-}
+.login-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
 .login-mark {
   width: 34px; height: 34px;
   background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
@@ -89,43 +82,30 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   font-family: var(--serif); font-size: 16px; color: var(--bg); font-weight: 400;
 }
-.login-brand-name {
-  font-family: var(--serif); font-size: 18px;
-  color: var(--text); letter-spacing: -.01em; font-weight: 400;
-}
+.login-brand-name { font-family: var(--serif); font-size: 18px; color: var(--text); letter-spacing: -.01em; font-weight: 400; }
 .login-brand-name em { color: var(--gold); font-style: italic; }
 
 .login-card h1 {
   font-family: var(--serif); font-size: 28px; font-weight: 400;
-  line-height: 1.2; color: var(--text); margin-bottom: 8px;
-  letter-spacing: -.01em;
+  line-height: 1.2; color: var(--text); margin-bottom: 8px; letter-spacing: -.01em;
 }
 .login-card h1 em { font-style: italic; color: var(--gold); }
 
-.login-sub {
-  font-size: 13px; color: var(--text2); line-height: 1.65;
-  margin-bottom: 32px; font-weight: 300;
-}
+.login-sub { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 32px; font-weight: 300; }
 
-/* API key note */
 .login-key-note {
   display: flex; align-items: flex-start; gap: 9px;
   padding: 11px 14px; margin-bottom: 22px;
-  background: var(--gold-dim); border: 1px solid rgba(232,201,122,0.2);
-  border-radius: 8px;
+  background: var(--gold-dim); border: 1px solid rgba(232,201,122,0.2); border-radius: 8px;
 }
 .login-key-note-icon { font-size: 13px; margin-top: 1px; flex-shrink: 0; }
 .login-key-note p { font-size: 12px; color: var(--gold); line-height: 1.6; font-weight: 400; }
 .login-key-note p span { opacity: .75; }
 
 .field { margin-bottom: 16px; }
-.field label {
-  display: block; font-size: 11px; font-weight: 500;
-  letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 7px;
-}
+.field label { display: block; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 7px; }
 .field input, .field .api-key-wrap input {
-  width: 100%; background: var(--bg3);
-  border: 1px solid var(--border2);
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
   border-radius: 8px; padding: 11px 14px; color: var(--text);
   font-family: var(--mono); font-size: 13px; outline: none;
   transition: border-color .15s, box-shadow .15s;
@@ -133,31 +113,26 @@ html, body {
 .field input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
 .field input::placeholder { color: var(--text3); font-family: var(--sans); }
 
-.api-key-wrap {
-  position: relative;
-}
+.api-key-wrap { position: relative; }
 .api-key-wrap input { padding-right: 40px; letter-spacing: .02em; }
 .toggle-vis {
   position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
   background: none; border: none; cursor: pointer;
-  color: var(--text3); font-size: 13px; padding: 3px 4px;
-  transition: color .15s;
+  color: var(--text3); font-size: 13px; padding: 3px 4px; transition: color .15s;
 }
 .toggle-vis:hover { color: var(--text2); }
 
 .login-err {
   font-size: 12px; color: var(--red);
   background: rgba(224,82,82,0.08); border: 1px solid rgba(224,82,82,0.2);
-  border-radius: 8px; padding: 10px 13px; margin-bottom: 16px; display: none;
-  line-height: 1.5;
+  border-radius: 8px; padding: 10px 13px; margin-bottom: 16px; display: none; line-height: 1.5;
 }
 .login-err.show { display: block; animation: shake .25s ease; }
 
 #btn-signin {
   width: 100%; padding: 12px; border: none; border-radius: 8px;
   background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
-  cursor: pointer;
-  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--sans); font-size: 13px; font-weight: 600;
   letter-spacing: .04em; color: var(--bg);
   display: flex; align-items: center; justify-content: center; gap: 8px;
   transition: opacity .15s, transform .1s; margin-top: 4px;
@@ -174,49 +149,30 @@ html, body {
 #btn-signin.loading .spinner { display: block; }
 #btn-signin.loading .signin-label { opacity: .7; }
 
-/* ═══════════════════════════════════════════════════
-   APP SHELL
-═══════════════════════════════════════════════════ */
 #app {
   display: none; height: 100vh;
   grid-template-rows: 56px 1fr;
   grid-template-columns: 248px 1fr;
-  grid-template-areas:
-    "bar bar"
-    "sidebar chat";
+  grid-template-areas: "bar bar" "sidebar chat";
 }
 #app.on { display: grid; animation: fadeIn .3s ease; }
 
-/* ── TOP BAR ─────────────────────────────────────── */
 #bar {
-  grid-area: bar;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 20px;
-  z-index: 10;
+  grid-area: bar; background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10;
 }
 .bar-left { display: flex; align-items: center; gap: 10px; }
 .bar-mark {
-  width: 28px; height: 28px;
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+  border-radius: 6px; display: flex; align-items: center; justify-content: center;
   font-family: var(--serif); font-size: 13px; color: var(--bg); font-weight: 400;
 }
-.bar-brand {
-  font-family: var(--serif); font-size: 16px;
-  color: var(--text); letter-spacing: -.01em; font-weight: 400;
-}
+.bar-brand { font-family: var(--serif); font-size: 16px; color: var(--text); letter-spacing: -.01em; font-weight: 400; }
 .bar-sep { width: 1px; height: 14px; background: var(--border2); margin: 0 4px; }
-.bar-tagline {
-  font-size: 11px; color: var(--text3);
-  letter-spacing: .06em; text-transform: uppercase; font-weight: 400;
-}
+.bar-tagline { font-size: 11px; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; font-weight: 400; }
 .bar-right { display: flex; align-items: center; gap: 12px; }
 .bar-client-pill {
-  display: flex; align-items: center; gap: 7px;
-  padding: 5px 11px; border-radius: 99px;
+  display: flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 99px;
   background: var(--surface); border: 1px solid var(--border2);
 }
 .bar-client-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
@@ -225,214 +181,115 @@ html, body {
 #btn-logout {
   background: none; border: 1px solid var(--border2); border-radius: 7px;
   padding: 5px 13px; cursor: pointer; color: var(--text3);
-  font-family: var(--sans); font-size: 11.5px; font-weight: 500;
-  letter-spacing: .04em;
+  font-family: var(--sans); font-size: 11.5px; font-weight: 500; letter-spacing: .04em;
   transition: border-color .15s, color .15s;
 }
 #btn-logout:hover { border-color: var(--red); color: var(--red); }
 
-/* ── SIDEBAR ─────────────────────────────────────── */
 #sidebar {
-  grid-area: sidebar;
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
+  grid-area: sidebar; background: var(--bg2); border-right: 1px solid var(--border);
   display: flex; flex-direction: column; overflow: hidden;
 }
-.sidebar-head {
-  padding: 16px 14px 12px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.sidebar-head-top {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 10px;
-}
-.sidebar-label {
-  font-size: 10px; font-weight: 600; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--text3);
-}
+.sidebar-head { padding: 16px 14px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.sidebar-head-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text3); }
 #btn-new-chat {
   display: flex; align-items: center; gap: 5px;
   background: var(--gold-dim); border: 1px solid rgba(232,201,122,0.25);
   border-radius: 6px; padding: 5px 10px; cursor: pointer;
-  font-size: 11px; font-weight: 600; color: var(--gold);
-  letter-spacing: .03em;
+  font-size: 11px; font-weight: 600; color: var(--gold); letter-spacing: .03em;
   transition: background .15s, border-color .15s;
 }
 #btn-new-chat:hover { background: rgba(232,201,122,0.15); border-color: rgba(232,201,122,0.45); }
 #btn-new-chat svg { flex-shrink: 0; }
 
-/* Search box */
-.sidebar-search {
-  position: relative;
-}
+.sidebar-search { position: relative; }
 .sidebar-search input {
-  width: 100%; background: var(--bg3);
-  border: 1px solid var(--border);
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
   border-radius: 7px; padding: 7px 11px 7px 30px;
-  color: var(--text2); font-family: var(--sans); font-size: 12px; outline: none;
-  transition: border-color .15s;
+  color: var(--text2); font-family: var(--sans); font-size: 12px; outline: none; transition: border-color .15s;
 }
 .sidebar-search input:focus { border-color: var(--border2); }
 .sidebar-search input::placeholder { color: var(--text3); }
-.sidebar-search-icon {
-  position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
-  color: var(--text3); pointer-events: none;
-}
+.sidebar-search-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
 
-#history-list {
-  flex: 1; overflow-y: auto; padding: 8px 8px;
-  display: flex; flex-direction: column; gap: 2px;
-}
-.history-empty {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; height: 100%; gap: 8px; padding: 24px 16px;
-  text-align: center;
-}
+#history-list { flex: 1; overflow-y: auto; padding: 8px 8px; display: flex; flex-direction: column; gap: 2px; }
+.history-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 8px; padding: 24px 16px; text-align: center; }
 .history-empty-icon { font-size: 20px; opacity: .25; }
 .history-empty p { font-size: 11.5px; color: var(--text3); line-height: 1.7; }
 
 .hist-item {
-  display: flex; align-items: center;
-  border-radius: 8px; cursor: pointer;
-  transition: background .12s; position: relative;
-  border: 1px solid transparent;
+  display: flex; align-items: center; border-radius: 8px; cursor: pointer;
+  transition: background .12s; position: relative; border: 1px solid transparent;
 }
 .hist-item:hover { background: var(--surface); border-color: var(--border); }
-.hist-item.active {
-  background: var(--gold-dim); border-color: rgba(232,201,122,0.25);
-}
+.hist-item.active { background: var(--gold-dim); border-color: rgba(232,201,122,0.25); }
 .hist-item-body { flex: 1; padding: 8px 10px; min-width: 0; }
-.hist-item-title {
-  font-size: 12.5px; font-weight: 500; color: var(--text2);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px;
-}
+.hist-item-title { font-size: 12.5px; font-weight: 500; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
 .hist-item.active .hist-item-title { color: var(--gold); font-weight: 500; }
 .hist-item-meta { font-size: 10px; color: var(--text3); font-family: var(--mono); }
-.hist-item-actions {
-  display: none; flex-shrink: 0; align-items: center; gap: 1px; padding-right: 6px;
-}
+.hist-item-actions { display: none; flex-shrink: 0; align-items: center; gap: 1px; padding-right: 6px; }
 .hist-item:hover .hist-item-actions { display: flex; }
-.hist-act-btn {
-  background: none; border: none; cursor: pointer; padding: 5px 6px;
-  border-radius: 5px; font-size: 11px; color: var(--text3);
-  transition: color .12s, background .12s;
-}
+.hist-act-btn { background: none; border: none; cursor: pointer; padding: 5px 6px; border-radius: 5px; font-size: 11px; color: var(--text3); transition: color .12s, background .12s; }
 .hist-act-btn:hover { color: var(--text); background: var(--surface2); }
 .hist-act-btn.del:hover { color: var(--red); background: rgba(224,82,82,0.1); }
-.hist-rename-input {
-  width: 100%; background: var(--bg3); border: 1px solid var(--gold);
-  border-radius: 5px; padding: 3px 7px; color: var(--text);
-  font-family: var(--sans); font-size: 12.5px; font-weight: 500; outline: none;
-}
+.hist-rename-input { width: 100%; background: var(--bg3); border: 1px solid var(--gold); border-radius: 5px; padding: 3px 7px; color: var(--text); font-family: var(--sans); font-size: 12.5px; font-weight: 500; outline: none; }
 
-.hist-skeleton {
-  height: 46px; border-radius: 8px; margin: 2px 0;
-  background: var(--surface);
-  position: relative; overflow: hidden;
-}
+.hist-skeleton { height: 46px; border-radius: 8px; margin: 2px 0; background: var(--surface); position: relative; overflow: hidden; }
 .hist-skeleton::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%);
-  animation: shimmer 1.4s infinite;
-  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite; background-size: 200% 100%;
 }
 @keyframes shimmer { to { background-position: -200% 0; } }
 
-/* ── CHAT AREA ───────────────────────────────────── */
 #chat {
   grid-area: chat; display: flex; flex-direction: column; overflow: hidden;
   background: var(--bg);
   background-image: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,201,122,0.025) 0%, transparent 60%);
 }
-#messages {
-  flex: 1; overflow-y: auto; padding: 32px 0 16px;
-  display: flex; flex-direction: column; gap: 0;
-}
+#messages { flex: 1; overflow-y: auto; padding: 32px 0 16px; display: flex; flex-direction: column; gap: 0; }
 
-/* ── WELCOME ─────────────────────────────────────── */
-#empty {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  text-align: center; padding: 48px 32px;
-}
+#empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px 32px; }
 #empty.gone { display: none; }
 
 .empty-icon-wrap {
-  width: 56px; height: 56px;
-  background: var(--gold-dim); border: 1px solid rgba(232,201,122,0.2);
-  border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 20px;
-  font-family: var(--serif); font-size: 22px; color: var(--gold);
+  width: 56px; height: 56px; background: var(--gold-dim); border: 1px solid rgba(232,201,122,0.2);
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px; font-family: var(--serif); font-size: 22px; color: var(--gold);
 }
-.empty-greeting {
-  font-family: var(--serif); font-size: 38px; font-weight: 400;
-  line-height: 1.1; color: var(--text); margin-bottom: 10px;
-  letter-spacing: -.02em;
-}
+.empty-greeting { font-family: var(--serif); font-size: 38px; font-weight: 400; line-height: 1.1; color: var(--text); margin-bottom: 10px; letter-spacing: -.02em; }
 .empty-greeting em { font-style: italic; color: var(--gold); }
-.empty-sub {
-  font-size: 14px; color: var(--text2); line-height: 1.75;
-  max-width: 380px; font-weight: 300; margin-bottom: 36px;
-}
+.empty-sub { font-size: 14px; color: var(--text2); line-height: 1.75; max-width: 380px; font-weight: 300; margin-bottom: 36px; }
 
-/* Starter chips */
-.starter-chips {
-  display: flex; flex-wrap: wrap; gap: 8px;
-  justify-content: center; max-width: 560px;
-}
+.starter-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 560px; }
 .chip {
-  padding: 8px 14px; border-radius: 99px;
-  background: var(--surface); border: 1px solid var(--border2);
-  font-size: 12.5px; color: var(--text2); cursor: pointer;
-  transition: border-color .15s, color .15s, background .15s;
-  font-weight: 400;
+  padding: 8px 14px; border-radius: 99px; background: var(--surface); border: 1px solid var(--border2);
+  font-size: 12.5px; color: var(--text2); cursor: pointer; transition: border-color .15s, color .15s, background .15s; font-weight: 400;
 }
 .chip:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
 
-/* ── MESSAGES ─────────────────────────────────────── */
-.msg-group {
-  display: flex; gap: 14px;
-  padding: 12px 36px;
-  animation: msgIn .24s cubic-bezier(.16,1,.3,1);
-}
-.msg-group.user {
-  flex-direction: row-reverse; justify-content: flex-start;
-}
-.msg-group + .msg-group { border-top: none; }
+.msg-group { display: flex; gap: 14px; padding: 12px 36px; animation: msgIn .24s cubic-bezier(.16,1,.3,1); }
+.msg-group.user { flex-direction: row-reverse; justify-content: flex-start; }
 
 .avatar {
   width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 500; font-family: var(--serif);
-  margin-top: 2px;
+  font-size: 13px; font-weight: 500; font-family: var(--serif); margin-top: 2px;
 }
-.msg-group.user .avatar {
-  background: var(--surface2); color: var(--text2);
-}
-.msg-group.assistant .avatar {
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
-  color: var(--bg); font-size: 14px;
-}
+.msg-group.user .avatar { background: var(--surface2); color: var(--text2); }
+.msg-group.assistant .avatar { background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%); color: var(--bg); font-size: 14px; }
 
 .msg-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; flex: 1; max-width: 660px; }
 .msg-group.user .msg-body { align-items: flex-end; max-width: 560px; }
 
-/* User bubble */
 .user-bubble {
   padding: 12px 16px; line-height: 1.65; font-size: 14px; word-break: break-word;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 12px 12px 4px 12px;
-  color: var(--text);
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 12px 12px 4px 12px; color: var(--text);
 }
 
-/* Assistant text — no box */
-.asst-text {
-  line-height: 1.8; font-size: 14.5px; word-break: break-word;
-  color: var(--text); padding-top: 2px;
-}
+.asst-text { line-height: 1.8; font-size: 14.5px; word-break: break-word; color: var(--text); padding-top: 2px; }
 .asst-text p { margin-bottom: 10px; }
 .asst-text p:last-child { margin-bottom: 0; }
 .asst-text strong { color: var(--text); font-weight: 600; }
@@ -440,22 +297,12 @@ html, body {
 .asst-text ul, .asst-text ol { padding-left: 18px; margin: 8px 0; }
 .asst-text li { margin-bottom: 6px; line-height: 1.65; color: var(--text2); }
 .asst-text li strong { color: var(--text); }
-.asst-text code {
-  background: var(--surface); border: 1px solid var(--border2); border-radius: 5px;
-  padding: 1px 6px; font-family: var(--mono); font-size: 12px; color: var(--gold);
-}
-.asst-text pre {
-  background: var(--surface); border: 1px solid var(--border2); border-radius: 10px;
-  padding: 14px 16px; overflow-x: auto; margin: 10px 0;
-  font-family: var(--mono); font-size: 12px; line-height: 1.7; color: var(--text2);
-}
+.asst-text code { background: var(--surface); border: 1px solid var(--border2); border-radius: 5px; padding: 1px 6px; font-family: var(--mono); font-size: 12px; color: var(--gold); }
+.asst-text pre { background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 14px 16px; overflow-x: auto; margin: 10px 0; font-family: var(--mono); font-size: 12px; line-height: 1.7; color: var(--text2); }
 .asst-text pre code { background: none; border: none; padding: 0; color: inherit; }
 
-.msg-meta {
-  font-size: 10px; color: var(--text3); font-family: var(--mono); padding: 0 2px;
-}
+.msg-meta { font-size: 10px; color: var(--text3); font-family: var(--mono); padding: 0 2px; }
 
-/* ── SOURCES ─────────────────────────────────────── */
 .src-toggle {
   display: inline-flex; align-items: center; gap: 5px;
   background: none; border: none; cursor: pointer;
@@ -466,81 +313,50 @@ html, body {
 .src-chevron { display: inline-block; transition: transform .15s; font-size: 9px; }
 .src-toggle.open .src-chevron { transform: rotate(90deg); }
 
-.src-panel {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 10px; overflow: hidden; display: none; margin-top: 4px;
-}
+.src-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: none; margin-top: 4px; }
 .src-panel.open { display: block; animation: slideDown .15s ease; }
-.src-item {
-  padding: 9px 12px; border-bottom: 1px solid var(--border);
-  display: flex; flex-direction: column; gap: 4px;
-}
+.src-item { padding: 9px 12px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
 .src-item:last-child { border-bottom: none; }
 .src-top { display: flex; align-items: center; gap: 7px; }
-.src-num {
-  font-family: var(--mono); font-size: 9px; color: var(--gold);
-  background: var(--gold-dim); border-radius: 4px; padding: 2px 5px; flex-shrink: 0;
-}
+.src-num { font-family: var(--mono); font-size: 9px; color: var(--gold); background: var(--gold-dim); border-radius: 4px; padding: 2px 5px; flex-shrink: 0; }
 .src-file { font-size: 11px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
 .src-score { font-family: var(--mono); font-size: 9px; color: var(--text3); flex-shrink: 0; }
-.src-preview {
-  font-size: 11px; color: var(--text3); line-height: 1.5;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
+.src-preview { font-size: 11px; color: var(--text3); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-/* ── TYPING INDICATOR ────────────────────────────── */
 .typing-wrap { padding: 4px 0; }
 .typing { display: flex; gap: 4px; align-items: center; }
-.dot {
-  width: 5px; height: 5px; border-radius: 50%; background: var(--text3);
-  animation: bounce 1.1s infinite;
-}
+.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); animation: bounce 1.1s infinite; }
 .dot:nth-child(2) { animation-delay: .15s; }
 .dot:nth-child(3) { animation-delay: .3s; }
 
-/* ── INPUT BAR ───────────────────────────────────── */
-#inputbar {
-  flex-shrink: 0; padding: 12px 36px 20px;
-  background: var(--bg);
-}
+#inputbar { flex-shrink: 0; padding: 12px 36px 20px; background: var(--bg); }
 .inputwrap {
   display: flex; align-items: flex-end; gap: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border2);
+  background: var(--surface); border: 1px solid var(--border2);
   border-radius: 12px; padding: 10px 10px 10px 18px;
-  max-width: 720px; margin: 0 auto;
-  transition: border-color .15s, box-shadow .15s;
+  max-width: 720px; margin: 0 auto; transition: border-color .15s, box-shadow .15s;
 }
-.inputwrap:focus-within {
-  border-color: rgba(232,201,122,0.4);
-  box-shadow: 0 0 0 3px var(--gold-glow);
-}
+.inputwrap:focus-within { border-color: rgba(232,201,122,0.4); box-shadow: 0 0 0 3px var(--gold-glow); }
 #qinput {
   flex: 1; background: none; border: none; outline: none; color: var(--text);
   font-family: var(--sans); font-size: 14.5px; line-height: 1.5;
-  resize: none; min-height: 22px; max-height: 140px; overflow-y: auto;
-  font-weight: 300;
+  resize: none; min-height: 22px; max-height: 140px; overflow-y: auto; font-weight: 300;
 }
 #qinput::placeholder { color: var(--text3); }
 #sendbtn {
   width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
   background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
   border: none; cursor: pointer; color: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  transition: opacity .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; transition: opacity .15s, transform .1s;
 }
 #sendbtn:hover { opacity: .9; }
 #sendbtn:active { transform: scale(.92); }
 #sendbtn:disabled { opacity: .25; cursor: not-allowed; }
 
-.input-footer {
-  max-width: 720px; margin: 7px auto 0;
-  display: flex; align-items: center; justify-content: space-between;
-}
+.input-footer { max-width: 720px; margin: 7px auto 0; display: flex; align-items: center; justify-content: space-between; }
 .input-hint { font-size: 10.5px; color: var(--text3); font-family: var(--mono); }
 .input-stats { font-size: 10.5px; color: var(--text3); font-family: var(--mono); }
 
-/* ── KEYFRAMES ───────────────────────────────────── */
 @keyframes cardIn    { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: none; } }
 @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
@@ -549,12 +365,8 @@ html, body {
 @keyframes bounce    { 0%,100% { transform: translateY(0); opacity: .3; } 50% { transform: translateY(-4px); opacity: 1; } }
 @keyframes shake     { 0%,100% { transform: translateX(0); } 25%,75% { transform: translateX(-4px); } 50% { transform: translateX(4px); } }
 
-/* ── RESPONSIVE ──────────────────────────────────── */
 @media (max-width: 820px) {
-  #app.on {
-    grid-template-columns: 1fr;
-    grid-template-areas: "bar" "chat";
-  }
+  #app.on { grid-template-columns: 1fr; grid-template-areas: "bar" "chat"; }
   #sidebar { display: none; }
   #messages, #inputbar { padding-left: 16px; padding-right: 16px; }
   .msg-group { padding: 10px 16px; }
@@ -601,8 +413,6 @@ html, body {
 
 <!-- ═══════════════ APP ═══════════════ -->
 <div id="app">
-
-  <!-- Top Bar -->
   <div id="bar">
     <div class="bar-left">
       <div class="bar-mark">A</div>
@@ -619,7 +429,6 @@ html, body {
     </div>
   </div>
 
-  <!-- Sidebar -->
   <div id="sidebar">
     <div class="sidebar-head">
       <div class="sidebar-head-top">
@@ -637,7 +446,6 @@ html, body {
     <div id="history-list"></div>
   </div>
 
-  <!-- Chat -->
   <div id="chat">
     <div id="empty">
       <div class="empty-icon-wrap">A</div>
@@ -671,7 +479,6 @@ html, body {
       </div>
     </div>
   </div>
-
 </div>
 
 <script>
@@ -684,11 +491,11 @@ const TOP_K = 6
 // ═══════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════
-let sess = null          // { apiKey, clientId, name }
+let sess = null
 let busy = false
 let activeConvId = null
 let conversations = []
-let allConversations = []   // unfiltered, for search
+let allConversations = []
 
 // ═══════════════════════════════════════════════════
 //  HELPERS
@@ -698,19 +505,13 @@ function esc(s) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
-
 function authHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${sess.apiKey}`,
-  }
+  return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sess.apiKey}` }
 }
-
 function showErr(msg) {
   const el = document.getElementById('lerr')
   el.textContent = msg; el.classList.add('show')
 }
-
 function toggleKeyVis() {
   const inp = document.getElementById('f-apikey')
   inp.type = inp.type === 'password' ? 'text' : 'password'
@@ -722,14 +523,10 @@ function toggleKeyVis() {
 async function doLogin() {
   const apiKey = document.getElementById('f-apikey').value.trim()
   const btn    = document.getElementById('btn-signin')
-
   document.getElementById('lerr').classList.remove('show')
-
-  if (!apiKey)             return showErr('Please enter your API key.')
+  if (!apiKey)                    return showErr('Please enter your API key.')
   if (!apiKey.startsWith('rak_')) return showErr('Invalid API key format. Keys begin with rak_')
-
   btn.classList.add('loading'); btn.disabled = true
-
   try {
     const r = await fetch(`${API}/chat/login`, {
       method: 'POST',
@@ -738,7 +535,6 @@ async function doLogin() {
     })
     const d = await r.json()
     if (!r.ok) throw new Error(d.error || 'Login failed')
-
     sess = { apiKey, clientId: d.client.clientId, name: d.client.name }
     bootApp()
   } catch (e) {
@@ -748,9 +544,7 @@ async function doLogin() {
   }
 }
 
-document.getElementById('f-apikey').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin()
-})
+document.getElementById('f-apikey').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin() })
 
 function bootApp() {
   document.getElementById('login-screen').style.display = 'none'
@@ -787,29 +581,21 @@ function renderHistEmpty() {
       <p>No conversations yet.<br>Start asking to see history.</p>
     </div>`
 }
-
 function renderSkeletons() {
-  document.getElementById('history-list').innerHTML =
-    [1,2,3].map(() => '<div class="hist-skeleton"></div>').join('')
+  document.getElementById('history-list').innerHTML = [1,2,3].map(() => '<div class="hist-skeleton"></div>').join('')
 }
 
 async function loadHistoryList() {
   if (!sess) return
   renderSkeletons()
   try {
-    const r = await fetch(`${API}/chat/conversations/list`, {
-      method: 'POST',
-      headers: authHeaders(),
-    })
+    const r = await fetch(`${API}/chat/conversations/list`, { method: 'POST', headers: authHeaders() })
     const d = await r.json()
     if (!r.ok) throw new Error(d.error)
     allConversations = d.conversations || []
     conversations    = [...allConversations]
     renderHistList()
-  } catch (e) {
-    console.warn('History load failed:', e.message)
-    renderHistEmpty()
-  }
+  } catch (e) { console.warn('History load failed:', e.message); renderHistEmpty() }
 }
 
 function renderHistList() {
@@ -851,13 +637,10 @@ function setActiveItem(id) {
 }
 
 function filterHistory(q) {
-  if (!q.trim()) {
-    conversations = [...allConversations]
-  } else {
+  if (!q.trim()) { conversations = [...allConversations] }
+  else {
     const lower = q.toLowerCase()
-    conversations = allConversations.filter(c =>
-      (c.title || '').toLowerCase().includes(lower)
-    )
+    conversations = allConversations.filter(c => (c.title || '').toLowerCase().includes(lower))
   }
   renderHistList()
   if (activeConvId) setActiveItem(activeConvId)
@@ -870,25 +653,19 @@ async function openConv(id) {
   if (busy || activeConvId === id) return
   try {
     const r = await fetch(`${API}/chat/conversations/get`, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ conversationId: id }),
+      method: 'POST', headers: authHeaders(), body: JSON.stringify({ conversationId: id }),
     })
     const d = await r.json()
     if (!r.ok) throw new Error(d.error)
-
     activeConvId = id
     const msgbox = document.getElementById('messages')
     msgbox.innerHTML = ''
     document.getElementById('empty').classList.add('gone')
-    msgbox.style.display = 'flex'
-    msgbox.style.flexDirection = 'column'
-
+    msgbox.style.display = 'flex'; msgbox.style.flexDirection = 'column'
     for (const m of (d.messages || [])) {
       appendMsg({ role: m.role, content: m.content, sources: m.sources || [], timestamp: m.timestamp }, msgbox)
     }
-    setActiveItem(id)
-    scrollBottom()
+    setActiveItem(id); scrollBottom()
   } catch (e) { console.warn('openConv failed:', e.message) }
 }
 
@@ -899,8 +676,7 @@ function startNewChat() {
   document.getElementById('empty').classList.remove('gone')
   document.getElementById('retrieved-count').textContent = ''
   document.getElementById('search-input').value = ''
-  conversations = [...allConversations]
-  renderHistList()
+  conversations = [...allConversations]; renderHistList()
   document.getElementById('qinput').focus()
 }
 
@@ -926,9 +702,7 @@ async function commitRename(id, newTitle, old) {
   if (!newTitle || newTitle === old) { if (titleEl) titleEl.textContent = old; return }
   try {
     const r = await fetch(`${API}/chat/conversations/rename`, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ conversationId: id, title: newTitle }),
+      method: 'POST', headers: authHeaders(), body: JSON.stringify({ conversationId: id, title: newTitle }),
     })
     if (!r.ok) throw new Error()
     if (titleEl) titleEl.textContent = newTitle
@@ -942,9 +716,7 @@ async function deleteConv(e, id) {
   if (!confirm('Delete this conversation?')) return
   try {
     const r = await fetch(`${API}/chat/conversations/delete`, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ conversationId: id }),
+      method: 'POST', headers: authHeaders(), body: JSON.stringify({ conversationId: id }),
     })
     if (!r.ok) throw new Error()
     allConversations = allConversations.filter(c => c._id !== id)
@@ -955,6 +727,9 @@ async function deleteConv(e, id) {
   } catch { alert('Failed to delete conversation.') }
 }
 
+// ═══════════════════════════════════════════════════
+//  SEND
+// ═══════════════════════════════════════════════════
 async function send(presetText) {
   const inp  = document.getElementById('qinput')
   const rawQ = (typeof presetText === 'string' ? presetText : inp.value).trim()
@@ -967,21 +742,17 @@ async function send(presetText) {
   document.getElementById('retrieved-count').textContent = ''
 
   const msgbox = document.getElementById('messages')
-  msgbox.style.display = 'flex'
-  msgbox.style.flexDirection = 'column'
+  msgbox.style.display = 'flex'; msgbox.style.flexDirection = 'column'
 
   appendMsg({ role: 'user', content: rawQ }, msgbox)
 
-  // Typing indicator
   const tid = 'ty' + Date.now()
   msgbox.insertAdjacentHTML('beforeend', `
     <div class="msg-group assistant" id="${tid}">
       <div class="avatar">A</div>
       <div class="msg-body">
         <div class="typing-wrap">
-          <div class="typing">
-            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-          </div>
+          <div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         </div>
       </div>
     </div>`)
@@ -989,18 +760,12 @@ async function send(presetText) {
 
   try {
     const r = await fetch(`${API}/chat/message`, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({
-        query: rawQ,
-        topK: TOP_K,
-        conversationId: activeConvId,
-      }),
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ query: rawQ, topK: TOP_K, conversationId: activeConvId }),
     })
     const d = await r.json()
     if (!r.ok) throw new Error(d.error || 'Request failed')
 
-    // Register new conversation in history
     if (d.conversationId && !activeConvId) {
       activeConvId = d.conversationId
       await loadHistoryList()
@@ -1014,7 +779,11 @@ async function send(presetText) {
 
     document.getElementById(tid)?.remove()
 
-    const answer = cleanAnswer(d.answer, d.sources || [])
+    // FIX 10: Removed the overly aggressive cleanAnswer substitution.
+    // The old version replaced "not found" answers with a generic fallback
+    // even when the LLM said it couldn't find something legitimately.
+    // Now we only strip citation brackets [1][2] and clean whitespace.
+    const answer = stripCitations(d.answer)
     appendMsg({ role: 'assistant', content: answer, sources: d.sources || [] }, msgbox)
     refreshHistTime(activeConvId)
 
@@ -1029,20 +798,14 @@ async function send(presetText) {
   }
 }
 
-function cleanAnswer(answer, sources) {
+// FIX 10 (continued): Simple citation stripper — only removes [1], [2,3] etc.
+// Does NOT replace "not found" responses, letting the backend answer speak.
+function stripCitations(answer) {
   if (!answer) return answer
-  let s = answer.replace(/\[\s*\d+(?:\s*,\s*\d+)*\s*\]/g, '').trim()
-  const fallbacks = [
-    /the (provided |given |available )?context does not (define|contain|mention|explain|include|describe|have|provide)/i,
-    /is not (defined|mentioned|described|explained|included) in the (provided |given |available )?context/i,
-    /no (information|data|definition|detail) (is |was )?(provided|found|available|present) (in|within) the (provided |given |available )?context/i,
-    /the (document|context|provided (context|documents?)) (do(es)? not|doesn't) (define|contain|mention|explain|describe)/i,
-    /based on the (provided |given |available )?context[^,]*,(?: i cannot| there is no| it is not)/i,
-  ]
-  if (fallbacks.some(p => p.test(s)) && sources.length > 0) {
-    s = "The information is available in your documents — here's what was found in the relevant sections. You may want to rephrase your question with slightly different wording for a more targeted answer."
-  }
-  return s.replace(/\s{2,}/g, ' ').trim()
+  return answer
+    .replace(/\[\s*\d+(?:\s*,\s*\d+)*\s*\]/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
 }
 
 // ═══════════════════════════════════════════════════
@@ -1057,15 +820,20 @@ function appendMsg(msg, box) {
   let srcHtml = ''
   if (!isUser && msg.sources?.length) {
     const uid   = 'sp' + Date.now() + Math.random().toString(36).slice(2, 6)
-    const items = msg.sources.map((s, i) => `
-      <div class="src-item">
-        <div class="src-top">
-          <span class="src-num">${i + 1}</span>
-          <span class="src-file">${esc(s.source_file || 'unknown')}</span>
-          <span class="src-score">${s.score != null ? (s.score * 100).toFixed(0) + '%' : '—'}</span>
-        </div>
-        <div class="src-preview">${esc(s.preview || '')}</div>
-      </div>`).join('')
+    const items = msg.sources.map((s, i) => {
+      // FIX 11: Display score as clean percentage (backend now returns 0-100)
+      // Guard against null/undefined scores
+      const scoreDisplay = s.score != null ? `${s.score}%` : '—'
+      return `
+        <div class="src-item">
+          <div class="src-top">
+            <span class="src-num">${i + 1}</span>
+            <span class="src-file">${esc(s.source_file || 'unknown')}</span>
+            <span class="src-score">${scoreDisplay}</span>
+          </div>
+          <div class="src-preview">${esc(s.preview || '')}</div>
+        </div>`
+    }).join('')
     srcHtml = `
       <button class="src-toggle" onclick="toggleSrc('${uid}',this)">
         <span class="src-chevron">›</span>&nbsp;${msg.sources.length} section${msg.sources.length !== 1 ? 's' : ''} referenced
@@ -1102,33 +870,27 @@ function refreshHistTime(id) {
   const el = document.querySelector(`#hi-${id} .hist-item-meta`)
   if (el) el.textContent = fmtDate(c.updatedAt)
 }
+
 function md(t) {
   if (!t) return ''
   let s = esc(t)
-  // Code blocks
   s = s.replace(/```[\s\S]*?```/g, m => {
     const inner = m.replace(/^```\w*\n?/, '').replace(/\n?```$/, '')
     return `<pre><code>${inner}</code></pre>`
   })
-  // Inline code
   s = s.replace(/`([^`]+)`/g, '<code>$1</code>')
-  // Bold
   s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-  // Italic
   s = s.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>')
-  // Bullet lists
   s = s.replace(/((?:^|\n)[ \t]*[-•][ \t].+)+/g, block => {
     const lis = block.split('\n').filter(l => l.trim())
       .map(l => `<li>${l.replace(/^[ \t]*[-•][ \t]/, '')}</li>`).join('')
     return `<ul>${lis}</ul>`
   })
-  // Numbered lists
   s = s.replace(/((?:^|\n)[ \t]*\d+\.[ \t].+)+/g, block => {
     const lis = block.split('\n').filter(l => l.trim())
       .map(l => `<li>${l.replace(/^[ \t]*\d+\.[ \t]/, '')}</li>`).join('')
     return `<ol>${lis}</ol>`
   })
-  // Paragraphs
   return s.split(/\n\n+/).map(block => {
     block = block.trim()
     if (!block) return ''
@@ -1136,19 +898,13 @@ function md(t) {
     return `<p>${block.replace(/\n/g, '<br>')}</p>`
   }).join('')
 }
+
 function scrollBottom() {
   const b = document.getElementById('messages')
   if (b) b.scrollTop = b.scrollHeight
 }
-
-function onKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
-}
-
-function grow(el) {
-  el.style.height = 'auto'
-  el.style.height = Math.min(el.scrollHeight, 140) + 'px'
-}
+function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }
+function grow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px' }
 </script>
 </body>
 </html>
